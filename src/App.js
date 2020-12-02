@@ -5,6 +5,7 @@ import {
   Route,
   Switch
 } from 'react-router-dom';
+import apiKey from './config';
 import axios from 'axios';
 
 import NotFound from './components/NotFound';
@@ -30,7 +31,7 @@ export default class App extends Component {
   }
 
   searchPhotos = (query = 'cats') => {
-    const url = `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${process.env.REACT_APP_FLICKR_API_KEY}&tags=${query}&per_page=24&safe_search=&format=json&nojsoncallback=1`;
+    const url = `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${query}&per_page=24&safe_search=&format=json&nojsoncallback=1`;
 
     axios.get(url)
       .then((response) => {
