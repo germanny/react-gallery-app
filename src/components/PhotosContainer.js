@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import axios from 'axios';
+
 import PhotosList from './PhotosList';
+import SearchForm from './SearchForm';
 
 // create a component for each photo
-export default class Photos extends Component {
+export default class PhotosContainer extends Component {
   constructor() {
     super();
     this.state = {
@@ -40,6 +42,8 @@ export default class Photos extends Component {
   render() {
     return (
       <div>
+        <SearchForm onSearch={this.searchPhotos} />
+
         <nav className="main-nav">
           <ul>
             <li><NavLink onClick={this.onNavClick} exact to="/">Home</NavLink></li>

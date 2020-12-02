@@ -1,10 +1,10 @@
 import React from 'react';
-import Photos from './Photos';
+import PhotosContainer from './PhotosContainer';
 
 const Search = ({ match }) => {
   console.log('matches: ', match);
   return (
-    <Photos path={match.params.path} />
+    <div>Search for something</div>
   );
 }
 

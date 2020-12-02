@@ -5,47 +5,66 @@ import {
   Route,
   Switch
 } from 'react-router-dom';
+import axios from 'axios';
 
 import NotFound from './components/NotFound';
-import Photos from './components/Photos';
-import Search from './components/Search';
+import PhotosList from './components/PhotosList';
+import SearchForm from './components/SearchForm';
 
-class App extends Component {
-  handleFormSubmit = (e) => {
-    e.preventDefault();
-    let searchTerm = this.search.value;
-    let path = `/search/${searchTerm}`;
-    this.props.history.push(path);
+export default class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      photos: [],
+      loading: true
+    };
+  }
+
+  componentDidMount() {
+    const match = (this.props.match) ? this.props.match.path.replace(',', '') : 'cats';
+    this.searchPhotos(match);
+  }
+
+  onNavClick = e => {
+    this.searchPhotos(e.target.pathname);
+  }
+
+  searchPhotos = (query = 'cats') => {
+    const url = `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${process.env.REACT_APP_FLICKR_API_KEY}&tags=${query}&per_page=24&safe_search=&format=json&nojsoncallback=1`;
+
+    axios.get(url)
+      .then((response) => {
+        this.setState({
+          photos: response.data.photos,
+          loading: false
+        });
+      })
+      .catch((error) => {
+        console.log('error fetching and parsing data: ', error);
+      })
   }
 
   render() {
     return (
       <BrowserRouter>
         <div className="container">
-          <form className="search-form" onSubmit={this.handleFormSubmit}>
-            <input
-              type="search"
-              name="search"
-              placeholder="Search"
-              name="search"
-              ref={(input) => this.search = input} // executes immediately after mounting
-              required
-            />
-            <button type="submit" className="search-button">
-              <svg fill="#fff" height="24" viewBox="0 0 23 23" width="24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
-                <path d="M0 0h24v24H0z" fill="none" />
-              </svg>
-            </button>
-          </form>
+          <SearchForm onSearch={this.searchPhotos} />
+
+          <nav className="main-nav">
+            <ul>
+              <li><NavLink onClick={this.onNavClick} exact to="/">Home</NavLink></li>
+              <li><NavLink onClick={this.onNavClick} to='/cats'>Cats</NavLink></li>
+              <li><NavLink onClick={this.onNavClick} to='/dogs'>Dogs</NavLink></li>
+              <li><NavLink onClick={this.onNavClick} to='/owls'>Owls</NavLink></li>
+            </ul>
+          </nav>
 
           <Switch>
-            <Route exact path="/" component={Photos} />
-            <Route path="/cats" component={Photos} />
-            <Route path="/dogs" component={Photos} />
-            <Route path="/computers" component={Photos} />
-            <Route path="/search" component={Search} />
-            <Route path="/search/:path" component={Search} />
+            <Route exact path="/" render={() => <PhotosList photos={this.state.photos} loading={this.state.loading} />} />
+            <Route path="/cats" render={() => <PhotosList photos={this.state.photos} loading={this.state.loading} />} />
+            <Route path="/dogs" render={() => <PhotosList photos={this.state.photos} loading={this.state.loading} />} />
+            <Route path="/owls" render={() => <PhotosList photos={this.state.photos} loading={this.state.loading} />} />
+            <Route path="/search/:term" render={() => <PhotosList photos={this.state.photos} loading={this.state.loading} />} />
             <Route component={NotFound} />
           </Switch>
 
@@ -54,5 +73,3 @@ class App extends Component {
     );
   }
 }
-
-export default App;

@@ -1,4 +1,6 @@
 import React from 'react';
+
+import NoPhotos from './NoPhotos';
 import Photo from './Photo';
 
 // combine all the individual Photo components into a list
@@ -9,14 +11,19 @@ const PhotosList = props => {
   let photos;
 
   // if we have photos, map over the photos and show a Photo component for each
-  if (!props.loading) {
-    photos = results.photo.map((photo, index) =>
-      // Photo Image URLs: https://www.flickr.com/services/api/misc.urls.html
-      <Photo key={index} url={`https://live.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}_n.jpg`} />
-    );
-  } else { // no photos :(
-    photos = `Loading ...`;
+  if (!results) {
+    photos = <NoPhotos />
+  } else {
+    if (!props.loading) {
+      photos = results.photo.map((photo, index) =>
+        // Photo Image URLs: https://www.flickr.com/services/api/misc.urls.html
+        <Photo key={index} url={`https://live.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}_n.jpg`} />
+      );
+    } else { // no photos :(
+      photos = `Loading ...`;
+    }
   }
+
 
   // return whatever we have
   return (
