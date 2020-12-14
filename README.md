@@ -5,7 +5,6 @@ Treehouse Project 7 - React Image Gallery App
 
 ```
 GitHub:     https://github.com/germanny/react-gallery-app
-URL:        https://germanny.github.io/react-gallery-app
 ```
 
 ### Flickr API Keys
